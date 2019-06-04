@@ -1,0 +1,31 @@
+Using the bpftrace functionality pull various pieces of data surronding the 
+acquistion of calling mutex_lock.
+
+What is gathered (all based on stack back trace).
+    1) # times the lock is aquired.
+    2) Average time (ns) to acquire the lock.
+    3) Maximum time (ns) to the acquirer the lock.
+    4) # times the lock was released (may not == the number times acquired)
+    5) Average time the lock is held for.
+    6) Maximum time the lock is held for.
+ *
+Note: we do not have the actual lock name, we have the entry point it was called from.
+
+Once the data is acquired, the program then reduces the data to a summary of information.
+The data is sorted by total acquistion time.
+
+usage:  produce_lock_info
+  -c <command>: command to be executed.
+  -f <pathname>: fle where bpftrace data is stored.
+  -h: help message
+  -o <pathname>: file to save the results to, if no output goes to stdout.
+  -s <value>: how much of the stack to show and present data on, default = 1
+
+Example output:
+                  caller        # holds  Hold Max (ns)  Hold Avg (ns)         # ACQs  ACQS Max (ns)  ACQS Avg (ns)
+kernfs_iop_permission+39          67713        3312432            934       25401012        3312432          66842
+kernfs_dop_revalidate+55          41630        2992085            644       15676498        2992085          68830
+   kernfs_iop_getattr+39          46174        1029183            881        3461649        1029183          66873
+ kernfs_iop_get_link+106          20498         131714            893         592237         131714          78336
+    kernfs_iop_lookup+34          26708          34432            881         466849          34432          36562
+

@@ -1,0 +1,29 @@
+dnf install -y  llvm-static.x86_64 clang clang-devel llvm llvm-devel llvm-static ncurses-devel lua	readline.x86_64 readline-devel.x86_64 python2 iperf3.x86_64 gitk.noarch bison flex cmake make git gcc-c++ elfutils-libelf-devel zlib-devel llvm-devel clang-devel systemtap-sdt-devel
+ln -s /usr/bin/python2 /usr/bin/python
+
+cd /root
+mkdir lua_build
+cd lua_build
+curl -R -O http://www.lua.org/ftp/lua-5.3.4.tar.gz
+tar -zxf  lua-5.3.4.tar.gz
+cd lua-5.3.4
+make linux test
+make install
+
+
+cd /root
+git clone https://github.com/iovisor/bcc.git
+cd bcc
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+make
+make install
+
+cd /root
+git clone https://github.com/iovisor/bpftrace
+
+cd bpftrace
+mkdir build; cd build; cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j8
+make install
